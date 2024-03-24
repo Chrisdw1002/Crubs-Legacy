@@ -499,7 +499,7 @@ SLT_fnc_enableScript = {
 						if (_spottedAnyGroupMember) then 
 						{
 							if (_group in RKAGRevealedGroups) exitWith {};
-							if (count units _group < RKAGMinGroupSize) exitWith {};
+							if (count units _group < RKAGMinGroupSize && ((vehicle (units _group select 0)) isEqualTo (units _group select 0))) exitWith {};
 							RKAGRevealedGroups pushBack _group;
 							[_group] spawn RKAG_fnc_spawnRevealGroup;
 						}
@@ -586,4 +586,11 @@ SLT_fnc_init = {
 	deleteVehicle this;
 };
 
-[false] call SLT_fnc_init;
+if (time < 1) then 
+{
+	call SLT_fnc_enableScript;
+}
+else 
+{
+	[false] call SLT_fnc_init;
+};

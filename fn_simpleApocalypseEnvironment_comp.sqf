@@ -16,7 +16,6 @@ SLT_fnc_RE_Server = {
 with uiNamespace do {SLTScriptDisplayName = "Simple Apocalypse Environment";};
 
 SLT_fnc_enableScript = {
-	comment "Code to be executed on all clients and JIP";
 	[[],{
 		if(!hasInterface) exitWith {};
 		if !(isNil "ZombieScenarioRunning") exitWith {};
@@ -96,8 +95,9 @@ SLT_fnc_enableScript = {
 
 	[[],{
 
-		if !(isNil "ZombieScenarioRunning") exitWith {};
-		ZombieScenarioRunning = true;
+		if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
+		if !(isNil "ZombieScenarioRunningServer") exitWith {};
+		ZombieScenarioRunningServer = true;
 
 		allZombieMusicTracks = 
 		[
@@ -134,7 +134,7 @@ SLT_fnc_enableScript = {
 			[] spawn {
 				currentTrackNumber = (currentTrackNumber + 1);
 				if(currentTrackNumber >= (count allZombieMusicTracks)) then {currentTrackNumber = 0;};
-				sleep random 120;
+				sleep random 90;
 				[allZombieMusicTracks select currentTrackNumber] remoteExec ["playMusic",0];
 			};
 		}];
@@ -315,7 +315,14 @@ SLT_fnc_enableScript = {
 			"Land_WoodenShelter_01_ruins_F",
 			"Land_Turret_01_ruins_F",
 			"Land_Camp_House_01_brown_ruins_F",
-			"Land_BasaltKerb_01_pile_F"
+			"Land_BasaltKerb_01_pile_F",
+			"Land_HistoricalPlaneWreck_02_rear_F",
+			"Land_HistoricalPlaneWreck_02_wing_right_F",
+			"Land_HistoricalPlaneWreck_02_wing_left_F",
+			"Land_HistoricalPlaneDebris_01_F",
+			"Land_HistoricalPlaneDebris_02_F",
+			"Land_HistoricalPlaneDebris_03_F",
+			"Land_HistoricalPlaneDebris_04_F"
 		];
 		{
 			comment "spawn wrecks on roads all over";
@@ -348,8 +355,7 @@ SLT_fnc_enableScript = {
 			"Land_UWreck_Heli_Attack_02_F",
 			"Land_UWreck_MV22_F",
 			"Land_Wreck_Heli_Attack_01_F",
-			"Land_Wreck_Heli_Attack_02_F",
-			"Land_HistoricalPlaneWreck_01_F"
+			"Land_Wreck_Heli_Attack_02_F"
 		];
 
 		{
@@ -449,4 +455,11 @@ SLT_fnc_init = {
 	deleteVehicle this;
 };
 
-[false] call SLT_fnc_init;
+if (time < 1) then 
+{
+	[] spawn SLT_fnc_enableScript;
+}
+else 
+{
+	[false] call SLT_fnc_init;
+};

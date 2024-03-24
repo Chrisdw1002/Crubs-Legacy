@@ -85,8 +85,9 @@ comment "Code to be executed on all clients and JIP";
 comment "Code to be executed on the server-side";
 [[],{
 
-	if !(isNil "ZombieScenarioRunning") exitWith {};
-	ZombieScenarioRunning = true;
+	if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
+	if !(isNil "ZombieScenarioRunningServer") exitWith {};
+	ZombieScenarioRunningServer = true;
 
 	allZombieMusicTracks = 
 	[
@@ -384,5 +385,6 @@ comment "Code to be executed on the server-side";
 comment "
 
 ZombieScenarioRunning = nil;
+ZombieScenarioRunningServer = nil;
 
 ";

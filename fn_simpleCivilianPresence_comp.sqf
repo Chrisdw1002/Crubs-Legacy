@@ -328,7 +328,7 @@ SLT_fnc_enableScript = {
 			CIVPOP_fnc_getAllPlayers = {
 				params[["_includeZeus",false]];
 				_return = [];
-				_return = if(_includeZeus) then {allPlayers}
+				_return = if(_includeZeus || (count allPlayers isEqualTo 1)) then {allPlayers}
 				else {(allPlayers - (call BIS_fnc_listCuratorPlayers))};
 				_return
 			};
@@ -698,4 +698,11 @@ SLT_fnc_init = {
 	deleteVehicle this;
 };
 
-[true] call SLT_fnc_init;
+if (time < 1) then 
+{
+	call SLT_fnc_enableScript;
+}
+else 
+{
+	[true] call SLT_fnc_init;
+};

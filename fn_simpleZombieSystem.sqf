@@ -1,8 +1,9 @@
 comment "Server Code";
 {
-	if !(isNil "isZombieSystemAllowed") exitWith {hint "Zombie System v3 Already Running!";};
+	if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
+	if !(isNil "isZombieSystemAllowedServer") exitWith {hint "Simple Zombies Already Running!";};
 
-	isZombieSystemAllowed = true;
+	isZombieSystemAllowedServer = true;
 	isRandomZombieSpawnAllowed = true;
 	isZombieInfectionAllowed = true;
 
@@ -508,7 +509,7 @@ comment "Server Code";
 			"a3\sounds_F\characters\human-sfx\p16\hit_max_1.wss"
 		];
 		private _pitch = random [0, 0.5, 0.9];
-		playSound3D [selectRandom _sounds,_unit,false,getPosATL _unit,5,_pitch,ZombieMaxDetectionRadius];
+		playSound3D [selectRandom _sounds,_unit,false,getPosASL _unit,5,_pitch,ZombieMaxDetectionRadius];
 
 		comment "Add loot";
 		[_unit,_instigator] call ZCS_fnc_addRandomLootToZombie;
@@ -543,7 +544,7 @@ comment "Server Code";
 	comment "Convert civilians to zombies outside safezones";
 	ZSC_fnc_startConverting = {
 		params["_updateRate"];
-		while {isZombieSystemAllowed} do 
+		while {isZombieSystemAllowedServer} do 
 		{
 			{
 				private _unit = _x;
@@ -584,7 +585,7 @@ comment "Server Code";
 	comment "Check the surroundings for targets";
 	ZSC_fnc_startSearching = {
 		params["_updateRate"];
-		while {isZombieSystemAllowed} do 
+		while {isZombieSystemAllowedServer} do 
 		{
 			private ["_zombie","_nearbyTargets","_hasTarget", "_visibility","_activeAgents","_isAlerted"];
 			_activeAgents = [];
@@ -635,7 +636,7 @@ comment "Server Code";
 	comment "Persue closest target";
 	ZSC_fnc_startPersuing = {
 		params["_updateRate"];
-		while {isZombieSystemAllowed} do 
+		while {isZombieSystemAllowedServer} do 
 		{
 			private ["_zombie","_target","_nearbyTargets","_idleZombies"];
 			_idleZombies = [];
@@ -1051,7 +1052,7 @@ comment "Server Code";
 		];
 		if ((round random _chance) != _chance) exitWith {false};
 		private _pitch = random [0, 0.5, 0.75];
-		playSound3D [selectRandom _sounds,_zombie,false,getPosATL _zombie,5,_pitch,300*0.325];
+		playSound3D [selectRandom _sounds,_zombie,false,getPosASL _zombie,5,_pitch,300*0.325];
 		true
 	};
 
@@ -1119,7 +1120,7 @@ comment "Server Code";
 		];
 		if ((round random _chance) != _chance) exitWith {false};
 		private _pitch = random [0, 0.5, 0.9];
-		playSound3D [selectRandom _sounds,_zombie,false,getPosATL _zombie,5,_pitch,ZombieMaxDetectionRadius];
+		playSound3D [selectRandom _sounds,_zombie,false,getPosASL _zombie,5,_pitch,ZombieMaxDetectionRadius];
 		true
 	};
 	publicVariable "ZSC_fnc_randomAttackSound";
@@ -1135,7 +1136,7 @@ comment "///////////////////////////////////////////////////////////////////////
 comment "JIP Client";
 [[],{
 	if(!hasInterface) exitWith {};
-	if(!isServer) then {if !(isNil "isZombieSystemAllowed") exitWith {hint "Zombie System v3 Already Running!"; if(true)exitWith{};};}; 
+	if(!isServer) then {if !(isNil "isZombieSystemAllowed") exitWith {hint "Simple Zombies Already Running!"; if(true)exitWith{};};}; 
 	if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
 	sleep 1;
 	0 fadeRadio 0;
@@ -1391,8 +1392,8 @@ comment "JIP Client";
 					"a3\sounds_f\characters\human-sfx\other\vzkriseni_04.wss"
 				];
 				_sound = selectRandom _sounds;
-				playSound3D [_sound,player,false,getPosATL player,5,1,125];
-				playSound3D [_sound,player,false,getPosATL player,5,1,125];
+				playSound3D [_sound,player,false,getPosASL player,5,1,125];
+				playSound3D [_sound,player,false,getPosASL player,5,1,125];
 			};
 
 			player setVariable ["isInfected",nil];
@@ -1645,7 +1646,10 @@ comment "
 
 [[],{}] remoteExec ['Spawn',0,'JIP_ID_zombieClient'];
 {deleteVehicle agent _x;} foreach agents;
-{isZombieSystemAllowed = nil;} remoteExec ['BIS_fnc_call',0];
+{
+	isZombieSystemAllowed = nil;
+	isZombieSystemAllowedServer = nil;
+} remoteExec ['BIS_fnc_call',0];
 
 
 ";

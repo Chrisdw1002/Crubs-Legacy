@@ -231,4 +231,11 @@ SLT_fnc_init = {
 	deleteVehicle this;
 };
 
-[true] call SLT_fnc_init;
+if (time < 1) then 
+{
+	[] spawn SLT_fnc_enableScript;
+}
+else 
+{
+	[true] call SLT_fnc_init;
+};

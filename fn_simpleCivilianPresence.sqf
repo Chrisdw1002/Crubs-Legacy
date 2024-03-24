@@ -1,4 +1,4 @@
-{
+[[],{
 	if !(isNil "isPopulateWorldAllowed") exitWith {};
 
 	CIVPOP_fnc_startSystem = {
@@ -310,7 +310,7 @@
 		CIVPOP_fnc_getAllPlayers = {
 			params[["_includeZeus",false]];
 			_return = [];
-			_return = if(_includeZeus) then {allPlayers}
+			_return = if(_includeZeus || (count allPlayers isEqualTo 1)) then {allPlayers}
 			else {(allPlayers - (call BIS_fnc_listCuratorPlayers))};
 			_return
 		};
@@ -614,7 +614,7 @@
 		[_maxUnitCount,_maxRoads,_minTravenDistance,_maxTravelDistance,_deleteDistance,_movementUpdateRate,_updateRate,_debug] spawn CIVPOP_fnc_initGroundVehicles;
 	};
 	call CIVPOP_fnc_startSystem;
-} remoteExec ["BIS_fnc_call",2];
+}] remoteExec ["Spawn",2];
 
 comment "
 // run on server

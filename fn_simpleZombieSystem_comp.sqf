@@ -16,11 +16,11 @@ SLT_fnc_RE_Server = {
 with uiNamespace do {SLTScriptDisplayName = "Simple Zombie System";};
 
 SLT_fnc_enableScript = {
-
 	{
-		if !(isNil "isZombieSystemAllowed") exitWith {hint "Zombie System v3 Already Running!";};
+		if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
+		if !(isNil "isZombieSystemAllowedServer") exitWith {hint "Simple Zombies Already Running!";};
 
-		isZombieSystemAllowed = true;
+		isZombieSystemAllowedServer = true;
 		isRandomZombieSpawnAllowed = true;
 		isZombieInfectionAllowed = true;
 
@@ -102,8 +102,11 @@ SLT_fnc_enableScript = {
 		publicVariable "AllInfectionCurables";
 		publicVariable "AllInfectionMedication";
 
-		comment "remote exec all zombie modules and for jip";
+		comment "remoteexec all zombie modules and for jip";
 		[[],{
+
+			if(!hasInterface) exitWith {};
+			if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
 			if !(isNil "ZSC_fnc_addSystemModules") exitWith {};
 
 			ZSC_EZM_fnc_createZombieModule = {
@@ -471,6 +474,8 @@ SLT_fnc_enableScript = {
 				waitUntil {!isNil "MAZ_EZM_fnc_addNewFactionToDynamicFactions"};
 				waitUntil {!isNil "MAZ_EZM_fnc_addNewModulesToDynamicModules"};
 
+				sleep 3;
+
 				["ZSC_fnc_addUnitModules"] call MAZ_EZM_fnc_addNewFactionToDynamicFactions;
 				["ZSC_fnc_addSystemModules"] call MAZ_EZM_fnc_addNewModulesToDynamicModules;
 			};
@@ -484,7 +489,7 @@ SLT_fnc_enableScript = {
 			_editorPrev = getText(configFile >> "CfgVehicles" >> _x >> "editorPreview");
 			if((_sideVeh isEqualTo civilian) && (_kind isEqualTo "soldier") && !(_editorPrev isEqualTo "")) then {AllCivilianClasses pushBack _x;};
 		} foreach ((configFile >> "CfgVehicles") call BIS_fnc_getCfgSubClasses);
-		AllCivilianClasses = (AllCivilianClasses - ["C_Driver_1_F","C_Driver_2_F","C_Driver_3_F","C_Driver_1_random_base_F","C_Driver_1_black_F","C_Driver_1_blue_F","C_Driver_1_green_F","C_Driver_1_red_F","C_Driver_1_white_F","C_Driver_1_yellow_F","C_Driver_1_orange_F"]);
+		AllCivilianClasses = (AllCivilianClasses - ["C_Protagonist_VR_F","C_Driver_1_F","C_Driver_2_F","C_Driver_3_F","C_Driver_1_random_base_F","C_Driver_1_black_F","C_Driver_1_blue_F","C_Driver_1_green_F","C_Driver_1_red_F","C_Driver_1_white_F","C_Driver_1_yellow_F","C_Driver_1_orange_F"]);
 		AllCivilianClasses = (AllCivilianClasses + ["B_Soldier_unarmed_F","O_Soldier_unarmed_F","O_R_JTAC_F","I_Soldier_unarmed_F","I_E_Soldier_unarmed_F","B_Captain_Dwarden_F","B_CTRG_Soldier_tna_F","B_Captain_Jay_F"]);
 
 		comment "Remove entity from known when it respawns";
@@ -521,7 +526,7 @@ SLT_fnc_enableScript = {
 				"a3\sounds_F\characters\human-sfx\p16\hit_max_1.wss"
 			];
 			private _pitch = random [0, 0.5, 0.9];
-			playSound3D [selectRandom _sounds,_unit,false,getPosATL _unit,5,_pitch,ZombieMaxDetectionRadius];
+			playSound3D [selectRandom _sounds,_unit,false,getPosASL _unit,5,_pitch,ZombieMaxDetectionRadius];
 
 			comment "Add loot";
 			[_unit,_instigator] call ZCS_fnc_addRandomLootToZombie;
@@ -556,7 +561,7 @@ SLT_fnc_enableScript = {
 		comment "Convert civilians to zombies outside safezones";
 		ZSC_fnc_startConverting = {
 			params["_updateRate"];
-			while {isZombieSystemAllowed} do 
+			while {isZombieSystemAllowedServer} do 
 			{
 				{
 					private _unit = _x;
@@ -597,7 +602,7 @@ SLT_fnc_enableScript = {
 		comment "Check the surroundings for targets";
 		ZSC_fnc_startSearching = {
 			params["_updateRate"];
-			while {isZombieSystemAllowed} do 
+			while {isZombieSystemAllowedServer} do 
 			{
 				private ["_zombie","_nearbyTargets","_hasTarget", "_visibility","_activeAgents","_isAlerted"];
 				_activeAgents = [];
@@ -648,7 +653,7 @@ SLT_fnc_enableScript = {
 		comment "Persue closest target";
 		ZSC_fnc_startPersuing = {
 			params["_updateRate"];
-			while {isZombieSystemAllowed} do 
+			while {isZombieSystemAllowedServer} do 
 			{
 				private ["_zombie","_target","_nearbyTargets","_idleZombies"];
 				_idleZombies = [];
@@ -1064,7 +1069,7 @@ SLT_fnc_enableScript = {
 			];
 			if ((round random _chance) != _chance) exitWith {false};
 			private _pitch = random [0, 0.5, 0.75];
-			playSound3D [selectRandom _sounds,_zombie,false,getPosATL _zombie,5,_pitch,300*0.325];
+			playSound3D [selectRandom _sounds,_zombie,false,getPosASL _zombie,5,_pitch,300*0.325];
 			true
 		};
 
@@ -1132,7 +1137,7 @@ SLT_fnc_enableScript = {
 			];
 			if ((round random _chance) != _chance) exitWith {false};
 			private _pitch = random [0, 0.5, 0.9];
-			playSound3D [selectRandom _sounds,_zombie,false,getPosATL _zombie,5,_pitch,ZombieMaxDetectionRadius];
+			playSound3D [selectRandom _sounds,_zombie,false,getPosASL _zombie,5,_pitch,ZombieMaxDetectionRadius];
 			true
 		};
 		publicVariable "ZSC_fnc_randomAttackSound";
@@ -1143,7 +1148,7 @@ SLT_fnc_enableScript = {
 
 	[[],{
 		if(!hasInterface) exitWith {};
-		if(!isServer) then {if !(isNil "isZombieSystemAllowed") exitWith {hint "Zombie System v3 Already Running!"; if(true)exitWith{};};}; 
+		if(!isServer) then {if !(isNil "isZombieSystemAllowed") exitWith {hint "Simple Zombies Already Running!"; if(true)exitWith{};};}; 
 		if (isMultiplayer) then {waitUntil {sleep 0.1; getClientState == "BRIEFING READ"};};
 		sleep 1;
 		0 fadeRadio 0;
@@ -1399,8 +1404,8 @@ SLT_fnc_enableScript = {
 						"a3\sounds_f\characters\human-sfx\other\vzkriseni_04.wss"
 					];
 					_sound = selectRandom _sounds;
-					playSound3D [_sound,player,false,getPosATL player,5,1,125];
-					playSound3D [_sound,player,false,getPosATL player,5,1,125];
+					playSound3D [_sound,player,false,getPosASL player,5,1,125];
+					playSound3D [_sound,player,false,getPosASL player,5,1,125];
 				};
 
 				player setVariable ["isInfected",nil];
@@ -1646,13 +1651,15 @@ SLT_fnc_enableScript = {
 
 		comment "[] spawn ZSC_fnc_initSpawnInfectionSupplies;";
 	}] remoteExec ["Spawn",0,"JIP_ID_zombieClient"];
-
 };
 
 SLT_fnc_disableScript = {
 	[[],{}] remoteExec ['Spawn',0,'JIP_ID_zombieClient'];
 	{deleteVehicle agent _x;} foreach agents;
-	{isZombieSystemAllowed = nil;} remoteExec ['BIS_fnc_call',0];
+	{
+		isZombieSystemAllowed = nil;
+		isZombieSystemAllowedServer = nil;
+	} remoteExec ['BIS_fnc_call',0];
 };
 
 SLT_fnc_init = {
@@ -1713,4 +1720,11 @@ SLT_fnc_init = {
 	deleteVehicle this;
 };
 
-[true] call SLT_fnc_init;
+if (time < 1) then 
+{
+	call SLT_fnc_enableScript;
+}
+else 
+{
+	[true] call SLT_fnc_init;
+};
