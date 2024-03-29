@@ -19,7 +19,7 @@
 					_position set[2,(_position select 2)+0.5];
 					_distance = (player) distance (_position);
 					_driver = if (driver vehicle _x isEqualTo objNull) then {effectiveCommander vehicle _x} else {driver vehicle _x};
-					_textSize = 0.02825;
+					_textSize = 0.0325;
 					_text = name _x;
 					_imageSize = [0.5,0.5];
 		
@@ -121,7 +121,7 @@
 
 							_imageSize = [0.65,0.65];
 
-							if((_distance > TNTMaxDistanceUnitMarkerText3D) && (vehicle _x != cursorTarget) && ((group driver vehicle _x) != (group player))) then {_text = "";};
+							if((_distance > TNTMaxDistanceUnitMarkerText3D) && (vehicle _x != cursorTarget)) then {_text = "";};
 
 							if ((_distance < TNTMaxDistanceUnitMarker3D) || (vehicle _x == cursorTarget)) then
 							{
@@ -132,7 +132,7 @@
 					
 					if !((vehicle _x) in _vehicleList) then 
 					{
-						if((_distance > TNTMaxDistanceUnitMarkerText3D) && (vehicle _x != cursorTarget) && ((group driver vehicle _x) != (group player))) then {_text = "";};
+						if((_distance > TNTMaxDistanceUnitMarkerText3D) && (vehicle _x != cursorTarget)) then {_text = "";};
 
 						if ((_distance < TNTMaxDistanceUnitMarker3D) || (vehicle _x == cursorTarget)) then
 						{

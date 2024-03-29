@@ -611,7 +611,7 @@ SLT_fnc_enableScript = {
 
 			[2,_minSpawnDistance,_deletionDistance,false] spawn CIVPOP_fnc_startValidSpawnDiscovery;
 
-			_maxUnitCount = 10;
+			_maxUnitCount = 15;
 			_maxRoads = 1000;
 			_minTravenDistance = 300;
 			_maxTravelDistance = 600;
@@ -621,7 +621,7 @@ SLT_fnc_enableScript = {
 			_debug = false;
 			[_maxUnitCount,_maxRoads,_minTravenDistance,_maxTravelDistance,_deleteDistance,_movementUpdateRate,_updateRate,_debug] spawn CIVPOP_fnc_initPedestrians;
 
-			_maxUnitCount = 5;
+			_maxUnitCount = 7;
 			_maxRoads = 1000;
 			_minTravenDistance = 1500;
 			_maxTravelDistance = 2000;
