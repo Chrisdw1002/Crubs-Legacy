@@ -35,7 +35,7 @@ SLT_fnc_enableScript = {
 			RKAGBulletMarkerColor = "ColorWhite";
 			RKAGBulletMarkerLifetime = 1;
 			RKAGBulletIncludePlayers = true;
-            RKAGShowGroups = true;
+            		RKAGShowGroups = true;
 
 			setGroupIconsVisible [true,true];
 			setGroupIconsSelectable true;
@@ -100,14 +100,14 @@ SLT_fnc_enableScript = {
 							setGroupIconsVisible [true,true];
 							setGroupIconsSelectable true;
 							disableMapIndicators [RKAGHideFriendlyForces,true,false,false];
-                            RKAGShowGroups = true;
+                            				RKAGShowGroups = true;
 							_control ctrlSetTooltip "Show Unit Markers: ON";
 						}
 						else 
 						{
 							setGroupIconsVisible [false,false];
 							setGroupIconsSelectable false;
-                            RKAGShowGroups = false;
+                            				RKAGShowGroups = false;
 							_control ctrlSetTooltip "Show Unit Markers: OFF";
 						};
 					}];
