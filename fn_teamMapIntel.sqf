@@ -17,6 +17,7 @@
 		RKAGBulletMarkerColor = "ColorWhite";
 		RKAGBulletMarkerLifetime = 1;
 		RKAGBulletIncludePlayers = true;
+		RKAGShowGroups = true;
 
 		setGroupIconsVisible [true,true];
 		setGroupIconsSelectable true;
@@ -81,12 +82,14 @@
 						setGroupIconsVisible [true,true];
 						setGroupIconsSelectable true;
 						disableMapIndicators [RKAGHideFriendlyForces,true,false,false];
+						RKAGShowGroups = true;
 						_control ctrlSetTooltip "Show Unit Markers: ON";
 					}
 					else 
 					{
 						setGroupIconsVisible [false,false];
 						setGroupIconsSelectable false;
+						RKAGShowGroups = false;
 						_control ctrlSetTooltip "Show Unit Markers: OFF";
 					};
 				}];
@@ -442,7 +445,7 @@
 				setGroupIconsSelectable false;
 			};
 
-			if (RKAGOnlyShowMarkersOnMap && _isOpened) then 
+			if (RKAGOnlyShowMarkersOnMap && _isOpened && RKAGShowGroups) then 
 			{
 				setGroupIconsVisible [true,true];
 				setGroupIconsSelectable true;
