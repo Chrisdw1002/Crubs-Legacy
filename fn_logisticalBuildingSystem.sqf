@@ -1782,7 +1782,7 @@ PUB_fnc_RE_Server = {
 		call LBS_fnc_startMainLoop;
 		[] spawn 
 		{
-			["Logistical Building System Online! (LBS v1.3)",8,46] call LBS_fnc_systemMessage;
+			["Logistical Building System Online! (LBS v1.4)",8,46] call LBS_fnc_systemMessage;
 			sleep 4;
 			["Toggle Build Mode With Windows Key",8,46] call LBS_fnc_systemMessage;
 		};
