@@ -5,21 +5,24 @@ Execute Server Side!
 
 Description: 
 - Use vehicles or containers to hold Construction Supplies
+- Vehicle Ammo Boxes are also supplies
 - 'Construction Supplies' are a point system used to spawn new assets and place them
 - An Object that contains Construction Supplies is called a 'Construction Unit'
 - Construction Units hold a limited amount of Construction Supplies
 - Assets can only be placed within proximity to a Construction Unit
 - When Construction Units are close together, the supplies available to the builder is combined
 - Construction Supplies eventually run out
-- Bringing more Construction Units allow bigger bases to be built
+- Bringing more construction supplies allow bigger bases to be built
 
 Basics:
+- Open Container on truck
+- Build Construction Unit
 - Stand near Construction Unit
-- Open Construction Terminal
+- Open Terminal
 - Choose asset from asset tree
-- Click 'place'
+- Click button to place
 - Look where you want the asset placed
-- Action menu to build
+- Left mouse button to place
 ";
 
 PUB_fnc_RE_Server = {
@@ -333,18 +336,14 @@ PUB_fnc_RE_Server = {
 		};
 
 		LBS_fnc_createTerminal = {
-			createDialog "RscDisplayGetReady";
-			_display = (findDisplay 37);
+			createDialog "RscDisplayEmpty";
+			_display = (findDisplay -1);
 			
 			with uinamespace do {
 				comment "Create 3D Terminal Control";
-				Terminal3DModelCtrl = _display displayCtrl 104;
-				{
-					if !(Terminal3DModelCtrl isEqualTo _x) then {_x ctrlShow false;};
-				} forEach allControls _display;
-
+				Terminal3DModelCtrl = _display ctrlCreate ["RscObject",-1];
 				Terminal3DModelCtrl ctrlSetModel "a3\props_f_exp_a\military\equipment\tablet_02_f.p3d";
-				Terminal3DModelCtrl ctrlSetModelScale 1;
+				Terminal3DModelCtrl ctrlSetModelScale 1.25;
 				Terminal3DModelCtrl ctrlSetModelDirAndUp [[0,0,-1],[0,-1,0]];
 				Terminal3DModelCtrl ctrlCommit 0;
 				
@@ -540,7 +539,7 @@ PUB_fnc_RE_Server = {
 				_RscStructuredText_1138 ctrlCommit 0;
 			};
 			[missionNameSpace, "LBSTerminalOpened",[]] call BIS_fnc_callScriptedEventHandler;
-			(findDisplay 37)
+			(findDisplay -1)
 		};
 
 		LBS_fnc_openBuildOptionsTerminal = {
@@ -1601,12 +1600,21 @@ PUB_fnc_RE_Server = {
 					if (typeOf cursorObject in LBSAllConstructionUnitClassNames) exitWith {["SORRY BUDDY, YOU CANT DELETE THIS BASE",5,46] call LBS_fnc_systemMessage;};
 					_closestConUnit = [getPos player,LBSMaxPlaceDistance,LBSAllConstructionUnitClassNames] call LBS_fnc_getClosestObjectOfClassNames;
 
-					_isAsset = cursorObject getVariable "IsLBSAsset";
+					_objectToDelete = cursorObject;
+					if (cursorObject isEqualTo objNull) then 
+					{
+						_helipad = nearestObject [getPosASL player,"Helipad_base_F"];
+						_objectToDelete = if (_helipad distance player < 2.5) then {_helipad} else {objNull};
+					};
+
+					if (_objectToDelete isEqualTo objNull) exitWith {};
+
+					_isAsset = _objectToDelete getVariable "IsLBSAsset";
 					if (isNil "_isAsset") exitWith {};
 
 					if (isNil "_closestConUnit") then {_closestConUnit = objNull;};
 					_isAuth = [player,_closestConUnit] call LBS_fnc_isPlayerAuthorized;
-					if (_isAuth) then {deleteVehicle cursorObject;} 
+					if (_isAuth) then {deleteVehicle _objectToDelete;} 
 					else {["YOU DONT HAVE PERMISSION TO DELETE OBJECTS HERE",5,46] call LBS_fnc_systemMessage;};
 				},
 				[_object],		
@@ -2315,7 +2323,11 @@ PUB_fnc_RE_Server = {
 			["FirePlace_burning_F",50,false,0.25,"TINY"],
 			["Land_FirePlace_F",50,false,0.25,"TINY"],
 			["Land_Camping_Light_F",50,false,0.25,"TINY"],
-			["Land_Camping_Light_off_F",50,false,0.25,"TINY"]
+			["Land_Camping_Light_off_F",50,false,0.25,"TINY"],
+			["Land_HelipadCircle_F",50,false,0.25,"TINY"],
+			["Land_HelipadCivil_F",50,false,0.25,"TINY"],
+			["Land_HelipadRescue_F",50,false,0.25,"TINY"],
+			["Land_HelipadSquare_F",50,false,0.25,"TINY"]
 		];
 
 		comment "Update Cost by Multiplier Value";
